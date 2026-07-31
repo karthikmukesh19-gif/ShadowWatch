@@ -4,6 +4,7 @@ from app.routes.threats import router as threat_router
 from app.routes.auth import router as auth_router
 from app.routes import audit_logs
 from app.routes import notifications
+
 app = FastAPI(
     title="ShadowWatch API",
     version="1.0.0",
@@ -11,7 +12,10 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:5173",
+        "https://shadow-watch-hzqa.vercel.app",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
