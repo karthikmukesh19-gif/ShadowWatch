@@ -17,11 +17,11 @@ router = APIRouter()
 @router.post("/login", response_model=TokenResponse)
 def login(user: LoginRequest):
 
-    print("Received Username:", user.username)
+    
 
     db_user = user_collection.find_one({"username": user.username})
 
-    print("DB User:", db_user)
+    
 
     if not db_user:
         raise HTTPException(
@@ -31,7 +31,7 @@ def login(user: LoginRequest):
 
     result = verify_password(user.password, db_user["password"])
 
-    print("Verify Result:", result)
+    
 
     if not result:
         raise HTTPException(
@@ -63,7 +63,6 @@ def login(user: LoginRequest):
         "read": False
     })
 
-    print("✅ Notification inserted")
 
     return {
         "access_token": token,

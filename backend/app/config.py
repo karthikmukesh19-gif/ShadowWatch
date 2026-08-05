@@ -1,5 +1,15 @@
-from datetime import timedelta
+import os
+from dotenv import load_dotenv
 
-SECRET_KEY = "change_this_to_a_long_random_secret_key_123456789"
+load_dotenv()
+
+SECRET_KEY = os.getenv("JWT_SECRET")
+
+if not SECRET_KEY:
+    raise ValueError("JWT_SECRET environment variable is missing!")
+
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+
+ACCESS_TOKEN_EXPIRE_MINUTES = int(
+    os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 60)
+)
