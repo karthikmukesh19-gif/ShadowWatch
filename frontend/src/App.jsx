@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+
 import Dashboard from "./pages/Dashboard";
 import Threats from "./pages/Threats";
 import Alerts from "./pages/Alerts";
@@ -8,6 +9,7 @@ import Settings from "./pages/Settings";
 import Login from "./pages/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AuditLogs from "./pages/AuditLogs";
+import AIScanner from "./pages/AIScanner";
 
 function App() {
   return (
@@ -52,11 +54,21 @@ function App() {
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/audit-logs"
           element={
             <ProtectedRoute>
               <AuditLogs />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/ai-scanner"
+          element={
+            <ProtectedRoute>
+              <AIScanner />
             </ProtectedRoute>
           }
         />
@@ -68,10 +80,10 @@ function App() {
               <Settings />
             </ProtectedRoute>
           }
-
         />
 
       </Routes>
+
       <ToastContainer
         position="top-right"
         autoClose={5000}

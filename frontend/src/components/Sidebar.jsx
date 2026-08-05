@@ -6,6 +6,7 @@ import {
   FaBell,
   FaFileAlt,
   FaCog,
+  FaRobot,
 } from "react-icons/fa";
 
 function Sidebar() {
@@ -43,6 +44,11 @@ function Sidebar() {
         <NavLink to="/reports" className={menuClass}>
           <FaFileAlt />
           Reports
+        </NavLink>
+
+        <NavLink to="/ai-scanner" className={menuClass}>
+          <FaRobot />
+          AI Scanner
         </NavLink>
 
         <NavLink to="/settings" className={menuClass}>

@@ -14,3 +14,6 @@ threat_collection = db["threats"]
 user_collection = db["users"]
 audit_logs_collection = db["audit_logs"]
 notification_collection = db["notifications"]
+
+# NEW
+scan_history_collection = db["scan_history"]
