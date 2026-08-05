@@ -16,6 +16,7 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [previousThreatCount, setPreviousThreatCount] = useState(0);
+  const [dashboard, setDashboard] = useState(null);
 
   const fetchThreats = async (showLoader = false) => {
     if (showLoader) {
@@ -31,7 +32,9 @@ function Dashboard() {
         previousThreatCount > 0 &&
         latestThreats.length > previousThreatCount
       ) {
-        const newestThreat = [...latestThreats].sort((a, b) => b.id - a.id)[0];
+        const newestThreat = latestThreats.reduce((latest, current) =>
+  current.id > latest.id ? current : latest
+);
 
         if (newestThreat.severity === "Critical") {
           toast.error(
@@ -56,16 +59,32 @@ function Dashboard() {
       }
     }
   };
+  const fetchDashboard = async () => {
+  try {
+    const response = await api.get("/dashboard");
+    setDashboard(response.data);
+  } catch (err) {
+    console.error(err);
+  }
+};
+const loadDashboard = async () => {
+  await Promise.all([
+    fetchDashboard(),
+    fetchThreats(true),
+  ]);
+};
 
   useEffect(() => {
-  fetchThreats(true);
+  loadDashboard();
 
   const interval = setInterval(() => {
+    fetchDashboard();
     fetchThreats(false);
   }, 30000);
 
   return () => clearInterval(interval);
 }, []);
+  
 
   if (loading) {
     return (
@@ -76,7 +95,7 @@ function Dashboard() {
       </MainLayout>
     );
   }
-
+  
   return (
     <MainLayout>
       <h1 className="text-white text-4xl font-bold">
@@ -97,39 +116,25 @@ function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mt-10">
         <StatCard
           title="Total Threats"
-          value={threats.length}
+          value={dashboard?.totalThreats ?? 0}
           color="text-red-500"
         />
 
         <StatCard
           title="Active Alerts"
-          value={
-            threats.filter((threat) => threat.status === "Active").length
-          }
+          value={dashboard?.activeAlerts ?? 0}
           color="text-yellow-400"
         />
 
         <StatCard
           title="Blocked Attacks"
-          value={
-            threats.filter((threat) => threat.status === "Blocked").length
-          }
+         value={dashboard?.blockedAttacks ?? 0}
           color="text-green-500"
         />
 
         <StatCard
           title="Risk Score"
-          value={
-            threats.length === 0
-              ? "0%"
-              : `${Math.round(
-                  (threats.filter(
-                    (threat) => threat.severity === "Critical"
-                  ).length /
-                    threats.length) *
-                    100
-                )}%`
-          }
+         value={`${dashboard?.riskScore ?? 0}%`}
           color="text-cyan-400"
         />
       </div>
