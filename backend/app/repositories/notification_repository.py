@@ -1,3 +1,5 @@
+from bson import ObjectId
+
 from app.database import notification_collection
 
 
@@ -5,25 +7,42 @@ class NotificationRepository:
 
     @staticmethod
     def get_all():
-        return list(
-            notification_collection.find(
-                {},
-                {"_id": 0}
-            ).sort("timestamp", -1)
+
+        notifications = list(
+            notification_collection.find()
+            .sort("timestamp", -1)
         )
 
-    @staticmethod
-    def create(data):
-        return notification_collection.insert_one(data)
+        for notification in notifications:
+            notification["_id"] = str(notification["_id"])
+
+        return notifications
 
     @staticmethod
-    def mark_read():
+    def create(notification):
 
-        return notification_collection.update_many(
-            {"read": False},
+        return notification_collection.insert_one(notification)
+
+    @staticmethod
+    def mark_as_read(notification_id):
+
+        return notification_collection.update_one(
+            {"_id": notification_id},
             {
                 "$set": {
                     "read": True
                 }
             }
+        )
+
+    @staticmethod
+    def clear_all():
+
+        return notification_collection.delete_many({})
+
+    @staticmethod
+    def delete(notification_id):
+
+        return notification_collection.delete_one(
+            {"_id": notification_id}
         )
